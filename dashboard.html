@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">CIMS Dashboard</h1>
+    <a href="index.html" class="text-blue-500">Home</a>
+  </nav>
+
+  <!-- Title -->
+  <div class="max-w-6xl mx-auto mt-6 px-4">
+  <h2 class="text-3xl font-bold mb-2">Dashboard</h2>
+  <p class="text-gray-600">Manage and track all complaints</p>
+</div>
+
+  <div class="text-center mt-4 space-x-2">
+  <button onclick="filterComplaints('all')" class="bg-gray-500 text-white px-4 py-2 rounded-lg">All</button>
+  <button onclick="filterComplaints('Pending')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg">Pending</button>
+  <button onclick="filterComplaints('Resolved')" class="bg-green-500 text-white px-4 py-2 rounded-lg">Resolved</button>
+</div>
+
+  <!-- Complaint List -->
+  <div id="complaintList" class="max-w-6xl mx-auto mt-6 px-4 grid md:grid-cols-2 gap-6"></div>
+
+ <script>
+  let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+  const container = document.getElementById("complaintList");
+
+  let currentFilter = "all";
+
+  function renderComplaints() {
+    container.innerHTML = "";
+
+    let filtered = complaints;
+
+    if (currentFilter !== "all") {
+      filtered = complaints.filter(c => c.status === currentFilter);
+    }
+
+    filtered.forEach((c, index) => {
+      const card = document.createElement("div");
+
+      const statusColor =
+        c.status === "Resolved"
+          ? "text-green-600"
+          : "text-yellow-600";
+
+      card.className = "bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition";
+
+      card.innerHTML = `
+        <h3 class="text-lg font-semibold">ID: ${c.id}</h3>
+        <p><strong>Name:</strong> ${c.name}</p>
+        <p><strong>Location:</strong> ${c.location}</p>
+        <p><strong>Category:</strong> ${c.category}</p>
+        <p><strong>Description:</strong> ${c.description}</p>
+        <p class="${statusColor} font-semibold mt-2">
+  ● ${c.status}
+</p>
+
+        ${
+          c.status === "Pending"
+            ? `<button onclick="markResolved(${index})"
+               class="mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+               Mark as Resolved
+             </button>`
+            : ""
+        }
+      `;
+
+      container.appendChild(card);
+    });
+  }
+
+  function markResolved(index) {
+    complaints[index].status = "Resolved";
+    localStorage.setItem("complaints", JSON.stringify(complaints));
+    renderComplaints();
+  }
+
+  function filterComplaints(status) {
+    currentFilter = status;
+    renderComplaints();
+  }
+
+  renderComplaints();
+</script>
+
+  
+
+</body>
+</html>

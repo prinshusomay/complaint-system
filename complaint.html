@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Complaint</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">CIMS</h1>
+    <a href="index.html" class="text-blue-500">Home</a>
+  </nav>
+
+  <!-- Form Section -->
+  <div class="max-w-2xl mx-auto mt-10 bg-white p-8 rounded-xl shadow-md">
+
+    <h2 class="text-2xl font-bold mb-6 text-center">Submit Complaint</h2>
+
+    <form id="complaintForm">
+
+      <input id="name" type="text" placeholder="Your Name"
+class="w-full mb-4 p-3 border rounded-lg">
+
+      <input id="location" type="text" placeholder="Room / Location"
+class="w-full mb-4 p-3 border rounded-lg">
+
+      <select id="category" class="w-full mb-4 p-3 border rounded-lg">
+        <option>Select Category</option>
+        <option>Electrical</option>
+        <option>Plumbing</option>
+        <option>Internet</option>
+        <option>Security</option>
+      </select>
+
+      <textarea id="description" placeholder="Describe your issue"
+class="w-full mb-4 p-3 border rounded-lg"></textarea>
+
+      <input type="file"
+        class="w-full mb-4 p-3 border rounded-lg">
+
+      <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600">
+        Submit Complaint
+      </button>
+
+    </form>
+
+  </div>
+
+  <script>
+document.getElementById("complaintForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const location = document.getElementById("location").value;
+  const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value;
+
+  const complaintID = "C" + Math.floor(Math.random() * 100000);
+
+  const complaint = {
+    id: complaintID,
+    name,
+    location,
+    category,
+    description,
+    status: "Pending"
+  };
+
+  // Get existing complaints
+  let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+
+  // Add new complaint
+  complaints.push(complaint);
+
+  // Save back to localStorage
+  localStorage.setItem("complaints", JSON.stringify(complaints));
+
+  alert("Complaint Submitted!\nYour ID: " + complaintID);
+
+  document.getElementById("complaintForm").reset();
+});
+</script>
+</body>
+</html>
