@@ -1,63 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Campus Infra Management</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIM Sirmaur | BMS | Infra-IT Committee</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Base Setup */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth;
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav { 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6); 
+        }
+
+        /* Image Hover Zoom - Smooth & Professional */
+        .img-container { overflow: hidden; border-radius: 1.5rem; }
+        .img-container img { transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .img-container:hover img { transform: scale(1.05); }
+
+        /* Premium Shadow Hovers */
+        .premium-hover { transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .premium-hover:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15); 
+        }
+
+        /* Animated Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 5px; border: 2px solid #f1f5f9; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* --- Scroll Reveal Animation Classes --- */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+    </style>
 </head>
+<body class="text-slate-800 antialiased selection:bg-blue-200 selection:text-blue-900">
 
-<body class="bg-gray-100 font-sans">
-
-  <nav class="bg-white shadow-md p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-blue-600">CIMS</h1>
-    <div>
-      <button class="text-gray-600 mr-4">Login</button>
-      <button class="bg-blue-500 text-white px-4 py-2 rounded-lg">Sign Up</button>
-    </div>
-  </nav>
-
-  <section class="text-center mt-16 px-4">
-    <h2 class="text-4xl font-bold mb-4">Campus Infra Management System</h2>
-    <p class="text-gray-600 mb-8">Manage complaints, track issues, and improve campus efficiency</p>
-
-    <a href="complaint.html">
-  <button class="bg-blue-500 text-white px-6 py-3 rounded-lg mr-4 hover:bg-blue-600">
-    Submit Complaint
-  </button>
-</a>
-
-    <a href="track.html">
-  <button class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">
-    Track Complaint
-  </button>
-</a>
-    </button>
-  </section>
-
-  <a href="dashboard.html">
-  <button class="bg-purple-500 text-white px-6 py-3 rounded-lg mt-4 hover:bg-purple-600">
-    View Complaints
-  </button>
-</a>
-
-  <section class="mt-20 px-10 grid md:grid-cols-3 gap-6">
-
-    <div class="bg-white p-6 rounded-xl shadow-md">
-      <h3 class="text-xl font-semibold mb-2">Easy Complaint Submission</h3>
-      <p class="text-gray-600">Students can quickly raise issues with proper details.</p>
+    <div id="loader" class="fixed inset-0 z-[100] bg-white flex items-center justify-center transition-opacity duration-700">
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+            <span class="text-slate-500 font-semibold tracking-widest text-xs uppercase">Loading Campus Data</span>
+        </div>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-md">
-      <h3 class="text-xl font-semibold mb-2">Real-Time Tracking</h3>
-      <p class="text-gray-600">Track complaint status anytime, anywhere.</p>
-    </div>
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/30">
+                        IM
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-xl tracking-tight text-slate-900 leading-none">Infra-IT</span>
+                        <span class="text-[10px] font-semibold text-slate-500 tracking-widest uppercase mt-0.5">IIM Sirmaur</span>
+                    </div>
+                </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-md">
-      <h3 class="text-xl font-semibold mb-2">Efficient Management</h3>
-      <p class="text-gray-600">Admins can manage and assign tasks efficiently.</p>
-    </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="text-blue-600 font-semibold text-sm tracking-wide">Overview</a>
+                    <a href="complaint.html" class="text-slate-600 hover:text-blue-600 transition-colors text-sm font-medium tracking-wide">Submit Issue</a>
+                    <a href="track.html" class="text-slate-600 hover:text-blue-600 transition-colors text-sm font-medium tracking-wide">Track Status</a>
+                    <div class="w-px h-5 bg-slate-200 mx-2"></div>
+                    <a href="dashboard.html" class="px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-blue-600 transition-colors shadow-md hover:shadow-lg">Admin Portal</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-  </section>
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-slate-900">
+        <div class="absolute inset-0 w-full h-full">
+            <img src="images/img5.jpg" alt="IIM Sirmaur Campus" class="w-full h-full object-cover opacity-60 scale-105 animate-[pulse_20s_ease-in-out_infinite]" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-900/40"></div>
+        </div>
 
+        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto mt-12 reveal active">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md mb-8">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-white/90 text-xs font-bold tracking-widest uppercase">System Online • BMS Program</span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 tracking-tighter leading-[1.05]">
+                Intelligent Campus <br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-white">Infrastructure.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-slate-300 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                The centralized command center for IIM Sirmaur. Report facilities issues with precision, track resolution in real-time, and ensure a world-class environment.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="complaint.html" class="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-slate-900 font-bold text-base hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                    Report an Issue
+                </a>
+                <a href="track.html" class="w-full sm:w-auto px-8 py-4 rounded-full bg-transparent text-white font-semibold border border-white/30 hover:bg-white/10 backdrop-blur-sm transition-all text-base flex items-center justify-center gap-2">
+                    Track Complaint ID 
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce opacity-70">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </div>
+    </section>
+
+    <section class="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 -mt-16 reveal delay-100 mb-24">
+        <div class="bg-white/90 backdrop-blur-xl rounded-[2rem] p-8 md:p-12 shadow-2xl border border-slate-100 flex flex-col md:flex-row justify-between divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            
+            <div class="flex flex-col items-center justify-center p-4 w-full premium-hover">
+                <span class="text-5xl font-black text-blue-600 mb-1 tracking-tight">500+</span>
+                <span class="text-sm font-semibold text-slate-500 uppercase tracking-widest">Issues Resolved</span>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center p-4 w-full premium-hover">
+                <span class="text-5xl font-black text-indigo-600 mb-1 tracking-tight">98%</span>
+                <span class="text-sm font-semibold text-slate-500 uppercase tracking-widest">Success Rate</span>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center p-4 w-full premium-hover">
+                <span class="text-5xl font-black text-blue-600 mb-1 tracking-tight">24/7</span>
+                <span class="text-sm font-semibold text-slate-500 uppercase tracking-widest">Live Tracking</span>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center p-4 w-full premium-hover">
+                <span class="text-5xl font-black text-indigo-600 mb-1 tracking-tight">&lt;24h</span>
+                <span class="text-sm font-semibold text-slate-500 uppercase tracking-widest">Avg. Response</span>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-20 bg-slate-50 border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="text-blue-600 font-bold tracking-widest text-sm uppercase mb-3">The Process</h2>
+                <h3 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tighter">Resolution in Four Steps</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center premium-hover reveal">
+                    <div class="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 border border-blue-100">1</div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Submit</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">Log your issue via the portal with specific details regarding building, floor, and category.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center premium-hover reveal delay-100">
+                    <div class="w-16 h-16 mx-auto bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 border border-indigo-100">2</div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">System Routing</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">The smart system instantly routes your complaint to the relevant Infra-IT sub-department.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center premium-hover reveal delay-200">
+                    <div class="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 border border-blue-100">3</div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Active Action</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">Maintenance staff is deployed. You can track their status live using your unique Complaint ID.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 text-center premium-hover reveal delay-300">
+                    <div class="w-16 h-16 mx-auto bg-green-50 text-green-600 rounded-full flex items-center justify-center text-2xl font-black mb-6 border border-green-100">✓</div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Resolution</h4>
+                    <p class="text-slate-500 text-sm leading-relaxed">The issue is marked resolved on the dashboard, completing the transparency loop.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="order-2 lg:order-1 reveal">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 font-bold text-xs tracking-widest uppercase mb-6 border border-blue-100">
+                    Transparency First
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tighter leading-tight">
+                    Never lose track of a <br/><span class="text-gradient">maintenance request.</span>
+                </h2>
+                <p class="text-slate-600 text-lg mb-8 leading-relaxed font-medium">
+                    Our digitized workflow completely eliminates the uncertainty of manual reporting. Every broken light, malfunctioning AC, or plumbing fault is assigned a secure ID, ensuring total accountability from submission to resolution.
+                </p>
+                
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start gap-4">
+                        <div class="mt-1 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <span class="text-slate-700 font-semibold text-base">Instant ID Generation for live querying.</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="mt-1 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <span class="text-slate-700 font-semibold text-base">Mobile-first interface for on-the-go reporting.</span>
+                    </li>
+                </ul>
+
+                <a href="track.html" class="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800 transition-colors">
+                    Try Tracking an Issue <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+            </div>
+
+            <div class="order-1 lg:order-2 img-container shadow-2xl reveal delay-200">
+                <img src="images/img2.jpg" alt="IIM Sirmaur Admin Block" class="w-full h-[500px] object-cover" />
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-24 bg-white max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="img-container shadow-2xl reveal relative">
+                <div class="absolute -top-6 -left-6 w-32 h-32 bg-indigo-50 rounded-full mix-blend-multiply blur-2xl z-0"></div>
+                <img src="images/img4.jpg" alt="IIM Sirmaur Campus Architecture" class="w-full h-[500px] object-cover relative z-10" />
+            </div>
+
+            <div class="reveal delay-200">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 font-bold text-xs tracking-widest uppercase mb-6 border border-indigo-100">
+                    Data-Driven Control
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tighter leading-tight">
+                    Equipping admins with <br/><span class="text-gradient">actionable insights.</span>
+                </h2>
+                <p class="text-slate-600 text-lg mb-8 leading-relaxed font-medium">
+                    The Infra-IT Committee utilizes granular data from this platform to make proactive facility decisions. We identify patterns of equipment failure, allocate resources effectively, and prevent issues before they disrupt campus life.
+                </p>
+
+                <div class="bg-slate-50 border border-slate-200 p-6 rounded-2xl mb-8">
+                    <p class="italic text-slate-700 text-sm">
+                        "This dashboard gives us a bird's eye view of the entire campus health. We went from reacting to problems to actively preventing them."
+                    </p>
+                    <p class="text-xs font-bold text-slate-900 mt-3 uppercase tracking-wide">— Infra-IT Committee</p>
+                </div>
+
+                <a href="dashboard.html" class="px-8 py-3.5 rounded-full bg-slate-900 text-white font-bold text-sm hover:bg-blue-600 transition-colors shadow-lg">
+                    Access Admin Dashboard
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="relative py-32 bg-slate-900 overflow-hidden reveal">
+        <div class="absolute inset-0 w-full h-full">
+            <img src="images/img1.jpg" alt="IIM Sirmaur Landscape" class="w-full h-full object-cover opacity-30" />
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-950/90 to-indigo-950/90"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <h2 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter">
+                Ready to improve our campus?
+            </h2>
+            <p class="text-blue-100 text-xl mb-12 font-medium max-w-2xl mx-auto opacity-90">
+                Join the initiative. Use the portal to report facilities issues and help the Infra-IT committee maintain the standard of excellence at IIM Sirmaur.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="complaint.html" class="px-10 py-4 rounded-full bg-blue-500 text-white font-bold text-lg hover:bg-blue-400 transition-colors shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                    Log an Issue Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div class="flex items-center gap-3 mb-6 md:mb-0">
+                    <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs">IM</div>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900">Infra-IT System</span>
+                </div>
+                <div class="flex gap-8 text-sm font-semibold text-slate-500">
+                    <a href="index.html" class="hover:text-blue-600 transition-colors">Home</a>
+                    <a href="complaint.html" class="hover:text-blue-600 transition-colors">Submit</a>
+                    <a href="track.html" class="hover:text-blue-600 transition-colors">Track</a>
+                    <a href="dashboard.html" class="hover:text-blue-600 transition-colors">Admin</a>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-400 font-medium text-xs tracking-wide">
+                    &copy; 2026 Campus Infrastructure Management System.
+                </p>
+                <p class="text-slate-500 font-bold text-xs uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                    Developed by Prinshu Somay | BMS
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Remove Preloader on load
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 700);
+        });
+
+        // 2. Scroll Reveal Animation Logic
+        // This adds the "Premium" feel by sliding elements in as you scroll down
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                threshold: 0.1, // Trigger when 10% of the element is visible
+                rootMargin: "0px 0px -50px 0px" 
+            });
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+        });
+    </script>
 </body>
 </html>

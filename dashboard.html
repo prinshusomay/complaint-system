@@ -1,99 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center | IIM Sirmaur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
+        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(226, 232, 240, 0.7); }
+        
+        /* Premium Filter Button Design */
+        .filter-btn { transition: all 0.3s ease; padding: 0.75rem 1.5rem; border-radius: 1rem; border: 1px solid transparent; cursor: pointer; text-align: center; font-weight: 600; font-size: 14px; color: #64748b; background: white; }
+        .filter-btn:hover { background-color: #f1f5f9; color: #3b82f6; }
+        .filter-btn.active { background-color: #0f172a; border-color: #0f172a; color: #fff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        /* Advanced Card Lifts */
+        .admin-card { transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); border: 1px solid #e2e8f0; position: relative; overflow: hidden; display: flex; flex-direction: column; height: 100%; z-index: 10; background: white; border-radius: 1.5rem; padding: 1.5rem; }
+        .admin-card:hover { transform: translateY(-6px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border-color: transparent; }
+        
+        /* Status Badges */
+        .badge-pending { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .dot-pending { background-color: #f59e0b; }
+        .badge-resolved { background-color: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .dot-resolved { background-color: #10b981; }
+        .badge-emergency { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .dot-emergency { background-color: #dc2626; animation: pulse 2s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Scroll Bar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+    </style>
 </head>
+<body class="text-slate-800 antialiased pt-24 pb-16">
 
-<body class="bg-gray-100 font-sans">
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-base shadow-lg">IIM</div>
+                    <span class="font-extrabold text-2xl tracking-tighter text-slate-950">Admin Dashboard</span>
+                </div>
+                <div class="hidden md:flex space-x-10 items-center">
+                    <a href="index.html" class="text-slate-700 hover:text-blue-600 font-medium text-sm">Home</a>
+                    <a href="complaint.html" class="text-slate-700 hover:text-blue-600 font-medium text-sm">Submit</a>
+                    <a href="track.html" class="text-slate-700 hover:text-blue-600 font-medium text-sm">Track</a>
+                    <a href="dashboard.html" class="text-blue-600 font-semibold text-sm">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md p-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-blue-600">CIMS Dashboard</h1>
-    <a href="index.html" class="text-blue-500">Home</a>
-  </nav>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 pt-6">
+        
+        <div class="flex flex-col md:flex-row justify-between items-end gap-6 pb-8 border-b border-slate-200 mb-10 fade-in">
+            <div class="flex-grow">
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-3xl shadow-inner">⚙️</div>
+                    <span class="text-4xl font-extrabold text-slate-950 tracking-tight">Command Center</span>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-black mb-3 text-slate-950 tracking-tighter">Infrastructure Overview</h1>
+                <p class="text-slate-500 font-medium">Centralized hub for tracking and resolving issues.</p>
+            </div>
+            
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl shadow-inner border border-slate-200">
+                <button onclick="renderDashboard('All')" id="btn-All" class="filter-btn active">All Issues</button>
+                <button onclick="renderDashboard('Pending')" id="btn-Pending" class="filter-btn">Pending</button>
+                <button onclick="renderDashboard('Resolved')" id="btn-Resolved" class="filter-btn">Resolved</button>
+            </div>
+        </div>
 
-  <!-- Title -->
-  <div class="max-w-6xl mx-auto mt-6 px-4">
-  <h2 class="text-3xl font-bold mb-2">Dashboard</h2>
-  <p class="text-gray-600">Manage and track all complaints</p>
-</div>
+        <div class="bg-white border border-slate-200 rounded-3xl p-8 mb-10 shadow-sm fade-in flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="w-full md:w-1/2">
+                <h2 class="text-2xl font-bold text-slate-950 mb-2">Category Breakdown</h2>
+                <p class="text-slate-500 text-sm font-medium mb-6">Real-time distribution of reported issues.</p>
+                <div class="grid grid-cols-2 gap-4" id="statsContainer"></div>
+            </div>
+            <div class="w-full md:w-64 h-48 relative flex justify-center">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
 
-  <div class="text-center mt-4 space-x-2">
-  <button onclick="filterComplaints('all')" class="bg-gray-500 text-white px-4 py-2 rounded-lg">All</button>
-  <button onclick="filterComplaints('Pending')" class="bg-yellow-500 text-white px-4 py-2 rounded-lg">Pending</button>
-  <button onclick="filterComplaints('Resolved')" class="bg-green-500 text-white px-4 py-2 rounded-lg">Resolved</button>
-</div>
+        <div id="gridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 fade-in"></div>
 
-  <!-- Complaint List -->
-  <div id="complaintList" class="max-w-6xl mx-auto mt-6 px-4 grid md:grid-cols-2 gap-6"></div>
+    </div>
 
- <script>
-  let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+    <script>
+        let currentFilter = 'All';
+        let chartInstance = null;
 
-  const container = document.getElementById("complaintList");
+        function renderDashboard(filter) {
+            currentFilter = filter;
+            
+            ['All', 'Pending', 'Resolved'].forEach(f => {
+                const btn = document.getElementById(`btn-${f}`);
+                if(f === filter) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
 
-  let currentFilter = "all";
+            const grid = document.getElementById('gridContainer');
+            let complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+            
+            updateAnalytics(complaints);
 
-  function renderComplaints() {
-    container.innerHTML = "";
+            if (filter !== 'All') {
+                complaints = complaints.filter(c => c.status === filter);
+            }
+            complaints.reverse();
 
-    let filtered = complaints;
+            if (complaints.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-slate-500 bg-white rounded-3xl border border-slate-200 border-dashed">
+                        <div class="text-4xl mb-4">🙌</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-1">All Clear!</h3>
+                        <p>No ${filter.toLowerCase()} complaints found.</p>
+                    </div>`;
+                return;
+            }
 
-    if (currentFilter !== "all") {
-      filtered = complaints.filter(c => c.status === currentFilter);
-    }
+            grid.innerHTML = '';
+            complaints.forEach(c => {
+                const isPending = c.status === 'Pending';
+                const isEmergency = c.priority === 'Emergency';
+                
+                let badgeClass = isPending ? (isEmergency ? 'badge-emergency' : 'badge-pending') : 'badge-resolved';
+                let dotClass = isPending ? (isEmergency ? 'dot-emergency' : 'dot-pending') : 'dot-resolved';
 
-    filtered.forEach((c, index) => {
-      const card = document.createElement("div");
+                const statusBadge = `<span class="px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1.5 ${badgeClass}"><div class="w-1.5 h-1.5 rounded-full ${dotClass}"></div>${c.status}</span>`;
 
-      const statusColor =
-        c.status === "Resolved"
-          ? "text-green-600"
-          : "text-yellow-600";
+                const resolveBtn = isPending
+                    ? `<button onclick="markResolved('${c.id}')" class="w-full mt-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-colors shadow-md">Mark as Resolved ✓</button>`
+                    : `<button disabled class="w-full mt-5 py-3 bg-slate-100 text-slate-400 text-sm font-bold rounded-xl cursor-not-allowed">Issue Resolved</button>`;
 
-      card.className = "bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition";
-
-      card.innerHTML = `
-        <h3 class="text-lg font-semibold">ID: ${c.id}</h3>
-        <p><strong>Name:</strong> ${c.name}</p>
-        <p><strong>Location:</strong> ${c.location}</p>
-        <p><strong>Category:</strong> ${c.category}</p>
-        <p><strong>Description:</strong> ${c.description}</p>
-        <p class="${statusColor} font-semibold mt-2">
-  ● ${c.status}
-</p>
-
-        ${
-          c.status === "Pending"
-            ? `<button onclick="markResolved(${index})"
-               class="mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-               Mark as Resolved
-             </button>`
-            : ""
+                grid.innerHTML += `
+                    <div class="admin-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-2xl font-black text-slate-900">${c.id}</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="mb-4 flex-grow">
+                            <h3 class="font-bold text-slate-800 text-lg">${c.category}</h3>
+                            <p class="text-xs text-slate-500 mb-4 font-medium">By ${c.name} • ${c.date}</p>
+                            <div class="bg-slate-50 rounded-xl p-3 mb-4 border border-slate-100 text-sm text-slate-700">
+                                <span class="block font-semibold text-slate-900">${c.building}</span>
+                                <span class="text-xs text-slate-500">${c.floor} Floor • ${c.area} ${c.number}</span>
+                            </div>
+                            <p class="text-sm text-slate-600 line-clamp-3">"${c.description}"</p>
+                        </div>
+                        ${resolveBtn}
+                    </div>
+                `;
+            });
         }
-      `;
 
-      container.appendChild(card);
-    });
-  }
+        function updateAnalytics(complaints) {
+            const counts = {};
+            let pending = 0;
+            complaints.forEach(c => {
+                counts[c.category] = (counts[c.category] || 0) + 1;
+                if (c.status === 'Pending') pending++;
+            });
 
-  function markResolved(index) {
-    complaints[index].status = "Resolved";
-    localStorage.setItem("complaints", JSON.stringify(complaints));
-    renderComplaints();
-  }
+            document.getElementById('statsContainer').innerHTML = `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <span class="block text-3xl font-black text-blue-600">${complaints.length}</span>
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Total Issues</span>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <span class="block text-3xl font-black text-orange-500">${pending}</span>
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Pending</span>
+                </div>
+            `;
 
-  function filterComplaints(status) {
-    currentFilter = status;
-    renderComplaints();
-  }
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            const labels = Object.keys(counts).length ? Object.keys(counts) : ['No Data'];
+            const data = Object.values(counts).length ? Object.values(counts) : [1];
+            
+            if (chartInstance) chartInstance.destroy();
 
-  renderComplaints();
-</script>
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#64748b'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '70%' }
+            });
+        }
 
-  
+        window.markResolved = function(id) {
+            let complaints = JSON.parse(localStorage.getItem('complaints')) || [];
+            const index = complaints.findIndex(c => c.id === id);
+            if(index !== -1) {
+                complaints[index].status = 'Resolved';
+                localStorage.setItem('complaints', JSON.stringify(complaints));
+                renderDashboard(currentFilter);
+            }
+        }
 
+        window.onload = () => renderDashboard('All');
+    </script>
 </body>
 </html>
